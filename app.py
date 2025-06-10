@@ -1,17 +1,24 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
-from procesador import buscar_respuesta  # O usa directamente si no tienes este archivo
+from procesador import buscar_respuesta
 
 app = Flask(__name__)
-CORS(app)  # 🔥 Esto habilita CORS para todas las rutas
 
-@app.route("/preguntar", methods=["POST"])
+@app.route('/')
+def home():
+    return 'Servidor Flask activo'
+
+@app.route('/salud')
+def salud():
+    return 'OK'
+
+@app.route('/preguntar', methods=['POST'])
 def preguntar():
-    datos = request.get_json()
-    pregunta = datos.get("pregunta", "")
+    data = request.get_json()
+    pregunta = data.get('pregunta', '')
     respuesta = buscar_respuesta(pregunta)
     return jsonify({"respuesta": respuesta})
 
-if __name__ == "__main__":
-    print("Servidor Flask corriendo...")
-    app.run(debug=True)
+if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', 5000))  # Render asigna dinámicamente un puerto
+    app.run(host='0.0.0.0', port=port)
